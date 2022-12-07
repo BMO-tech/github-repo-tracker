@@ -27,7 +27,7 @@ describe('libs::github', () => {
     it.each([{ mock: [{ number: 1234 }] }, { mock: [] }])(
       'should fetch array of pulls from provided repo params',
       async ({ mock }) => {
-        jest.spyOn(httpService, 'get').mockResolvedValue(mock);
+        jest.spyOn(httpService, 'get').mockResolvedValue({ data: mock });
 
         const results = await service.fetchRepoPulls({
           owner: 'test',
@@ -39,7 +39,7 @@ describe('libs::github', () => {
     );
 
     it('should fetch data for a provided pull request', async () => {
-      const mockResult = {
+      const mock = {
         commits: 4,
         id: 1,
         number: 1234,
@@ -47,7 +47,7 @@ describe('libs::github', () => {
         user: { login: 'test' },
       };
 
-      jest.spyOn(httpService, 'get').mockResolvedValue(mockResult);
+      jest.spyOn(httpService, 'get').mockResolvedValue({ data: mock });
 
       const results = await service.fetchPullRequest({
         owner: 'test',
@@ -55,7 +55,7 @@ describe('libs::github', () => {
         number: 1234,
       });
 
-      expect(results).toEqual(mockResult);
+      expect(results).toEqual(mock);
     });
   });
 });

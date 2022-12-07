@@ -1,4 +1,4 @@
-import { Controller, Get, Param } from '@nestjs/common';
+import { Controller, Get, Query } from '@nestjs/common';
 import { ReposService } from './repos.service';
 import { IPullRequestData } from './types';
 
@@ -8,7 +8,7 @@ export class ReposController {
 
   @Get()
   async getPullRequests(
-    @Param() params: { owner?: string; repo?: string; url?: string },
+    @Query() params: { owner?: string; repo?: string; url?: string },
   ): Promise<IPullRequestData[]> {
     try {
       if (Object.values(params).length === 0) {

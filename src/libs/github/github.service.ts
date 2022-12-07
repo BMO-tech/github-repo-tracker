@@ -18,7 +18,10 @@ export class GithubService {
    * @returns IGithubPullsResponse[]
    */
   async fetchRepoPulls(params: IRepoParams): Promise<IGithubPullsResponse[]> {
-    return this.http.get(`repos/${params.owner}/${params.repo}/pulls`);
+    const { data } = await this.http.get(
+      `repos/${params.owner}/${params.repo}/pulls`,
+    );
+    return data;
   }
 
   /**
@@ -31,8 +34,9 @@ export class GithubService {
   async fetchPullRequest(
     params: { number: number } & IRepoParams,
   ): Promise<IGithubPullRequestResponse> {
-    return this.http.get(
+    const { data } = await this.http.get(
       `repos/${params.owner}/${params.repo}/pulls/${params.number}`,
     );
+    return data;
   }
 }

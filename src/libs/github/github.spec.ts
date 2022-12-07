@@ -11,7 +11,7 @@ describe('libs::github', () => {
   beforeEach(async () => {
     const module = await Test.createTestingModule({
       imports: [HttpModule],
-      providers: [GithubService, HttpService],
+      providers: [GithubService],
     }).compile();
 
     httpService = module.get<HttpService>(HttpService);
@@ -34,5 +34,20 @@ describe('libs::github', () => {
         expect(results).toEqual(mock);
       },
     );
+
+    it('should fetch data for a provided pull request', async () => {
+      const mockResult = {
+        commits: 4,
+        id: 1,
+        number: 1234,
+        title: 'test',
+        user: { login: 'test' },
+      };
+      jest.spyOn(httpService, 'get').mockResolvedValue(mockResult);
+      const stub = { owner: 'test', repo: 'test', number: 1234 };
+      const results = await service.fetchPullRequest(stub);
+
+      expect(results).toEqual(mockResult);
+    });
   });
 });

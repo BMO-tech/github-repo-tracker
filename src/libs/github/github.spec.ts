@@ -28,8 +28,11 @@ describe('libs::github', () => {
       'should fetch array of pulls from provided repo params',
       async ({ mock }) => {
         jest.spyOn(httpService, 'get').mockResolvedValue(mock);
-        const stub = { owner: 'test', repo: 'test' };
-        const results = await service.fetchRepoPulls(stub);
+
+        const results = await service.fetchRepoPulls({
+          owner: 'test',
+          repo: 'test',
+        });
 
         expect(results).toEqual(mock);
       },
@@ -43,9 +46,14 @@ describe('libs::github', () => {
         title: 'test',
         user: { login: 'test' },
       };
+
       jest.spyOn(httpService, 'get').mockResolvedValue(mockResult);
-      const stub = { owner: 'test', repo: 'test', number: 1234 };
-      const results = await service.fetchPullRequest(stub);
+
+      const results = await service.fetchPullRequest({
+        owner: 'test',
+        repo: 'test',
+        number: 1234,
+      });
 
       expect(results).toEqual(mockResult);
     });

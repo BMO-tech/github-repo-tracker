@@ -32,23 +32,23 @@ describe('v1::repos', () => {
     // Happy Path Tests
     it.each([
       { params: { owner: 'test', repo: 'test' } },
-      { url: 'https://github.com/test/test' },
+      { params: { url: 'https://github.com/test/test' } },
     ])(
       'should handle a GET request to fetch pull request data',
       async ({ params }) => {
-        const mockResult = {
-          commits: 4,
+        const mock = {
+          commit_count: 4,
           id: 1,
           number: 1234,
           title: 'test',
-          user: { login: 'test' },
+          author: 'test',
         };
 
-        jest.spyOn(service, 'getPullRequests').mockResolvedValue([mockResult]);
+        jest.spyOn(service, 'getPullRequests').mockResolvedValue([mock]);
 
         const results = await controller.getPullRequests(params);
 
-        expect(results).toEqual([mockResult]);
+        expect(results).toEqual([mock]);
       },
     );
   });
@@ -62,7 +62,7 @@ describe('v1::repos', () => {
     });
 
     it('should get pull requests from github client library', async () => {
-      const mockResult = {
+      const mock = {
         commits: 4,
         id: 1,
         number: 1234,
@@ -74,14 +74,22 @@ describe('v1::repos', () => {
         .spyOn(github, 'fetchRepoPulls')
         .mockResolvedValue([{ number: 1234 }]);
 
-      jest.spyOn(github, 'fetchPullRequest').mockResolvedValue(mockResult);
+      jest.spyOn(github, 'fetchPullRequest').mockResolvedValue(mock);
 
       const results = await service.getPullRequests({
         owner: 'test',
         repo: 'test',
       });
 
-      expect(results).toEqual([mockResult]);
+      expect(results).toEqual([
+        {
+          id: mock.id,
+          number: mock.number,
+          title: mock.title,
+          author: mock.user.login,
+          commit_count: mock.commits,
+        },
+      ]);
     });
   });
 });

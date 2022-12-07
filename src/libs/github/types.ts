@@ -12,6 +12,7 @@ export interface IGithubPullRequestResponse {
   commits: number;
   id: number;
   number: number;
+  title: string;
   user: IGithubUser;
   [key: string]: unknown;
 }

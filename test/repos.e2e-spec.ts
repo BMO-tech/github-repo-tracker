@@ -24,8 +24,14 @@ describe('ReposModule (e2e)', () => {
     app = moduleFixture.createNestApplication();
     github = moduleFixture.get<GitHubService>(GitHubService);
     await app.init();
+
+    jest.spyOn(github, 'fetchRepoPulls').mockResolvedValue([{ number: 1234 }]);
+    jest
+      .spyOn(github, 'fetchPullRequest')
+      .mockResolvedValue(mockGitHubResponse);
   });
 
+  afterEach(() => jest.clearAllMocks());
   afterAll(async () => await app.close());
 
   describe('ReposController::success', () => {
@@ -38,13 +44,6 @@ describe('ReposModule (e2e)', () => {
     };
 
     it('/GET repos/pull-requests', () => {
-      jest
-        .spyOn(github, 'fetchRepoPulls')
-        .mockResolvedValue([{ number: 1234 }]);
-      jest
-        .spyOn(github, 'fetchPullRequest')
-        .mockResolvedValue(mockGitHubResponse);
-
       return request(app.getHttpServer())
         .get('/repos/pull-requests')
         .query({ url: 'https://github.com/test/test' })
@@ -53,17 +52,24 @@ describe('ReposModule (e2e)', () => {
     });
 
     it('/GET repos/:owner/:repo/pull-requests', () => {
-      jest
-        .spyOn(github, 'fetchRepoPulls')
-        .mockResolvedValue([{ number: 1234 }]);
-      jest
-        .spyOn(github, 'fetchPullRequest')
-        .mockResolvedValue(mockGitHubResponse);
-
       return request(app.getHttpServer())
         .get('/repos/test/test/pull-requests')
         .expect(200)
         .expect([mockSuccessValue]);
+    });
+  });
+
+  describe('ReposController::errors', () => {
+    it('/GET repos/pull-request 400 - no url', () => {
+      return request(app.getHttpServer())
+        .get('/repos/pull-requests')
+        .expect(400);
+    });
+    it('/GET repos/pull-request 400 - bad url', () => {
+      return request(app.getHttpServer())
+        .get('/repos/pull-requests')
+        .query({ url: 'https://gitlab.com/test/test' })
+        .expect(400);
     });
   });
 });

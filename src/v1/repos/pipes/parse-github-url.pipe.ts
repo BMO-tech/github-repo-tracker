@@ -10,6 +10,9 @@ export class ParseGitHubURL implements PipeTransform {
     if (!value || value === undefined) {
       throw new BadRequestException('No GitHub URL was provided');
     }
+    if (!(value as string).includes('github.com')) {
+      throw new BadRequestException(`${value} is not a GitHub URL`);
+    }
     return this.helper.sanitizeGitHubURL(value);
   }
 }

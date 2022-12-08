@@ -1,8 +1,8 @@
 import { Module } from '@nestjs/common';
-import { GithubModule } from './github/github.module';
+import { GitHubModule } from './github/github.module';
 import { HelpersModule } from './helpers/helpers.module';
 
 @Module({
-  imports: [GithubModule, HelpersModule],
+  imports: [GitHubModule, HelpersModule],
 })
 export class LibsModule {}

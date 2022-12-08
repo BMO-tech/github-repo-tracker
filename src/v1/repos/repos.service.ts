@@ -1,14 +1,14 @@
 import { Injectable } from '@nestjs/common';
-import { GithubService } from '@/libs/github/github.service';
-import type { IGithubPullsResponse, IRepoParams } from '@/libs/github/types';
+import { GitHubService } from '@/libs/github/github.service';
+import type { IGitHubPullsResponse, IRepoParams } from '@/libs/github/types';
 import type { IPullRequestData } from './types';
 
 @Injectable()
 export class ReposService {
-  constructor(private readonly github: GithubService) {}
+  constructor(private readonly github: GitHubService) {}
 
   /**
-   * Gets pull requests from Github client library
+   * Gets pull requests from GitHub client library
    *
    * @param params Repository information
    *
@@ -23,7 +23,7 @@ export class ReposService {
     return Promise.all(
       pulls.map(
         async (
-          pull: IGithubPullsResponse,
+          pull: IGitHubPullsResponse,
         ): Promise<IPullRequestData | { error: string }> => {
           try {
             const { id, number, title, user, commits } =

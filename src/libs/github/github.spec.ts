@@ -6,29 +6,29 @@ import {
 } from '@nestjs/common';
 import { Test } from '@nestjs/testing';
 import { HttpModule, HttpService } from 'nestjs-http-promise';
-import { GithubService } from './github.service';
+import { GitHubService } from './github.service';
 
 describe('libs::github', () => {
   let httpService: HttpService;
-  let service: GithubService;
+  let service: GitHubService;
 
   afterEach(() => jest.clearAllMocks());
 
   beforeEach(async () => {
     const module = await Test.createTestingModule({
       imports: [HttpModule],
-      providers: [GithubService],
+      providers: [GitHubService],
     }).compile();
 
     httpService = module.get<HttpService>(HttpService);
-    service = module.get<GithubService>(GithubService);
+    service = module.get<GitHubService>(GitHubService);
   });
 
   it('should be defined', () => {
     expect(service).toBeDefined();
   });
 
-  describe('libs::github::GithubService', () => {
+  describe('libs::github::GitHubService', () => {
     // Happy Path Tests
     it.each([{ mock: [{ number: 1234 }] }, { mock: [] }])(
       'should fetch array of pull requests from provided repo params',

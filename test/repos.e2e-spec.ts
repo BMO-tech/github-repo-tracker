@@ -2,10 +2,10 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { INestApplication } from '@nestjs/common';
 import * as request from 'supertest';
 import { AppModule } from '@/app.module';
-import { GithubService } from '@/libs/github/github.service';
+import { GitHubService } from '@/libs/github/github.service';
 
 describe('ReposModule (e2e)', () => {
-  const mockGithubResponse = {
+  const mockGitHubResponse = {
     commits: 4,
     id: 1,
     number: 1234,
@@ -14,7 +14,7 @@ describe('ReposModule (e2e)', () => {
   };
 
   let app: INestApplication;
-  let github: GithubService;
+  let github: GitHubService;
 
   beforeEach(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
@@ -22,7 +22,7 @@ describe('ReposModule (e2e)', () => {
     }).compile();
 
     app = moduleFixture.createNestApplication();
-    github = moduleFixture.get<GithubService>(GithubService);
+    github = moduleFixture.get<GitHubService>(GitHubService);
     await app.init();
   });
 
@@ -30,11 +30,11 @@ describe('ReposModule (e2e)', () => {
 
   describe('ReposController::success', () => {
     const mockSuccessValue = {
-      commits: mockGithubResponse.commits,
-      id: mockGithubResponse.id,
-      number: mockGithubResponse.number,
-      title: mockGithubResponse.title,
-      author: mockGithubResponse.user.login,
+      commits: mockGitHubResponse.commits,
+      id: mockGitHubResponse.id,
+      number: mockGitHubResponse.number,
+      title: mockGitHubResponse.title,
+      author: mockGitHubResponse.user.login,
     };
 
     it('/GET repos/pull-requests', () => {
@@ -43,7 +43,7 @@ describe('ReposModule (e2e)', () => {
         .mockResolvedValue([{ number: 1234 }]);
       jest
         .spyOn(github, 'fetchPullRequest')
-        .mockResolvedValue(mockGithubResponse);
+        .mockResolvedValue(mockGitHubResponse);
 
       return request(app.getHttpServer())
         .get('/repos/pull-requests')
@@ -58,7 +58,7 @@ describe('ReposModule (e2e)', () => {
         .mockResolvedValue([{ number: 1234 }]);
       jest
         .spyOn(github, 'fetchPullRequest')
-        .mockResolvedValue(mockGithubResponse);
+        .mockResolvedValue(mockGitHubResponse);
 
       return request(app.getHttpServer())
         .get('/repos/test/test/pull-requests')

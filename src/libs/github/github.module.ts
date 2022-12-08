@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 import { HttpModule } from 'nestjs-http-promise';
-import { GithubService } from './github.service';
+import { GitHubService } from './github.service';
 
 @Module({
   imports: [
@@ -13,7 +13,7 @@ import { GithubService } from './github.service';
       validateStatus: (status) => status < 400,
     }),
   ],
-  providers: [GithubService],
-  exports: [GithubService],
+  providers: [GitHubService],
+  exports: [GitHubService],
 })
-export class GithubModule {}
+export class GitHubModule {}

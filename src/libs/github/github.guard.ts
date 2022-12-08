@@ -6,7 +6,7 @@ import {
 } from '@nestjs/common';
 
 @Injectable()
-export class GithubGuard implements CanActivate {
+export class GitHubGuard implements CanActivate {
   canActivate(context: ExecutionContext): boolean {
     const request = context.switchToHttp().getRequest();
     const authorization = request?.headers?.authorization;
@@ -20,7 +20,7 @@ export class GithubGuard implements CanActivate {
   }
 }
 
-export const GithubToken = createParamDecorator(
+export const GitHubToken = createParamDecorator(
   (data: unknown, ctx: ExecutionContext) => {
     const request = ctx.switchToHttp().getRequest();
     return request.githubToken ?? null;

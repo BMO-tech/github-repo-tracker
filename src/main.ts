@@ -15,16 +15,16 @@ async function bootstrap() {
   app.enableVersioning({ type: VersioningType.URI });
 
   const swaggerConfig = new DocumentBuilder()
-    .setTitle('Github Repo Tracker API')
+    .setTitle('GitHub Repo Tracker API')
     .setVersion('1.0')
     .addBearerAuth()
-    .addSecurityRequirements('bearer')
+    .setDescription('Quickly keep track of any GitHub repository')
     .build();
   const document = SwaggerModule.createDocument(app, swaggerConfig);
   SwaggerModule.setup('docs', app, document);
 
   await app.listen(3000, () =>
-    Logger.log('Github Repo Tracker API listing on port 3000'),
+    Logger.log('GitHub Repo Tracker API listing on port 3000'),
   );
 }
 bootstrap();

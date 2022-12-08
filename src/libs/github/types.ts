@@ -3,21 +3,21 @@ export interface IRepoParams {
   repo: string;
 }
 
-export interface IGithubPullsResponse {
+export interface IGitHubPullsResponse {
   number: number;
   [key: string]: unknown;
 }
 
-export interface IGithubPullRequestResponse {
+export interface IGitHubPullRequestResponse {
   commits: number;
   id: number;
   number: number;
   title: string;
-  user: IGithubUser;
+  user: IGitHubUser;
   [key: string]: unknown;
 }
 
-export interface IGithubUser {
+export interface IGitHubUser {
   login: string;
   [key: string]: unknown;
 }

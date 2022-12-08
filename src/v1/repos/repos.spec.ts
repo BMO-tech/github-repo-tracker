@@ -1,5 +1,5 @@
-import { GithubModule } from '@/libs/github/github.module';
-import { GithubService } from '@/libs/github/github.service';
+import { GitHubModule } from '@/libs/github/github.module';
+import { GitHubService } from '@/libs/github/github.service';
 import { HelpersService } from '@/libs/helpers/helpers.service';
 import { Test } from '@nestjs/testing';
 import { ReposController } from './repos.controller';
@@ -7,20 +7,20 @@ import { ReposService } from './repos.service';
 
 describe('v1::repos', () => {
   let controller: ReposController;
-  let github: GithubService;
+  let github: GitHubService;
   let service: ReposService;
 
   afterEach(() => jest.clearAllMocks());
 
   beforeEach(async () => {
     const module = await Test.createTestingModule({
-      imports: [GithubModule],
+      imports: [GitHubModule],
       controllers: [ReposController],
       providers: [HelpersService, ReposService],
     }).compile();
 
     controller = module.get<ReposController>(ReposController);
-    github = module.get<GithubService>(GithubService);
+    github = module.get<GitHubService>(GitHubService);
     service = module.get<ReposService>(ReposService);
   });
 

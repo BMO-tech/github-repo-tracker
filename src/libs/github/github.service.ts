@@ -7,13 +7,13 @@ import {
 } from '@nestjs/common';
 import { HttpService } from 'nestjs-http-promise';
 import {
-  IGithubPullRequestResponse,
-  IGithubPullsResponse,
+  IGitHubPullRequestResponse,
+  IGitHubPullsResponse,
   IRepoParams,
 } from './types';
 
 @Injectable()
-export class GithubService {
+export class GitHubService {
   constructor(private readonly http: HttpService) {}
 
   /**
@@ -21,12 +21,12 @@ export class GithubService {
    *
    * @param params Repository information
    *
-   * @returns IGithubPullsResponse[]
+   * @returns IGitHubPullsResponse[]
    */
   async fetchRepoPulls(
     params: IRepoParams,
     githubToken?: string,
-  ): Promise<IGithubPullsResponse[]> {
+  ): Promise<IGitHubPullsResponse[]> {
     try {
       this.addAuthHeader(githubToken);
       const { data } = await this.http.get(
@@ -43,12 +43,12 @@ export class GithubService {
    *
    * @param params Pull Request information
    *
-   * @returns IGithubPullRequestResponse
+   * @returns IGitHubPullRequestResponse
    */
   async fetchPullRequest(
     params: { number: number } & IRepoParams,
     githubToken?: string,
-  ): Promise<IGithubPullRequestResponse> {
+  ): Promise<IGitHubPullRequestResponse> {
     try {
       this.addAuthHeader(githubToken);
       const { data } = await this.http.get(
@@ -72,7 +72,7 @@ export class GithubService {
   }
 
   /**
-   * Handles axios errors returned from Github API
+   * Handles axios errors returned from GitHub API
    *
    * @param error AxiosError
    */
@@ -92,7 +92,7 @@ export class GithubService {
 
     if (error.response.status === 503) {
       throw new ServiceUnavailableException(
-        'Github is unavailable at the moment',
+        'GitHub is unavailable at the moment',
         { description: error.message },
       );
     }

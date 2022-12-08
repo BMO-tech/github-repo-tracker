@@ -1,4 +1,11 @@
-import { Controller, Get, Param, Query, UseGuards } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Logger,
+  Param,
+  Query,
+  UseGuards,
+} from '@nestjs/common';
 import {
   ApiBadRequestResponse,
   ApiBearerAuth,
@@ -31,6 +38,8 @@ import { IPullRequestData } from './types';
 @UseGuards(GitHubGuard)
 @Controller({ path: 'repos', version: '1' })
 export class ReposController {
+  private readonly logger = new Logger(ReposController.name);
+
   constructor(private readonly service: ReposService) {}
 
   /**
@@ -58,7 +67,7 @@ export class ReposController {
     try {
       return await this.service.getPullRequests(params, githubToken);
     } catch (e) {
-      console.error(e);
+      this.logger.error(e, JSON.stringify(params));
       throw e;
     }
   }
@@ -82,7 +91,7 @@ export class ReposController {
     try {
       return await this.service.getPullRequests({ owner, repo });
     } catch (e) {
-      console.error(e);
+      this.logger.error(e, JSON.stringify({ owner, repo }));
       throw e;
     }
   }

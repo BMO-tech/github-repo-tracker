@@ -1,10 +1,12 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { GitHubService } from '@/libs/github/github.service';
 import type { IGitHubPullsResponse, IRepoParams } from '@/libs/github/types';
 import type { IPullRequestData } from './types';
 
 @Injectable()
 export class ReposService {
+  private readonly logger = new Logger(ReposService.name);
+
   constructor(private readonly github: GitHubService) {}
 
   /**
@@ -42,7 +44,7 @@ export class ReposService {
               commits,
             };
           } catch (e) {
-            // TODO LOG THIS
+            this.logger.error(e);
             return { error: e.message };
           }
         },

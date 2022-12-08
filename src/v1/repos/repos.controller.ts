@@ -1,5 +1,4 @@
-import { IRepoParams } from '@/libs/github/types';
-import { Controller, Get, Param, Query } from '@nestjs/common';
+import { Controller, Get, Param, Query, UseGuards } from '@nestjs/common';
 import {
   ApiBadRequestResponse,
   ApiNotFoundResponse,
@@ -10,6 +9,8 @@ import {
   ApiTags,
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
+import { GithubGuard, GithubToken } from '@/libs/github/github.guard';
+import { IRepoParams } from '@/libs/github/types';
 import { ParseGithubURL } from './pipes/ParseGithubURL.pipe';
 import { RepoEntity } from './repo.entity';
 import { ReposService } from './repos.service';
@@ -26,6 +27,7 @@ import { IPullRequestData } from './types';
 @ApiServiceUnavailableResponse({
   description: 'The API or Github is not currently available',
 })
+@UseGuards(GithubGuard)
 @Controller({ path: 'repos', version: '1' })
 export class ReposController {
   constructor(private readonly service: ReposService) {}
@@ -49,10 +51,11 @@ export class ReposController {
   })
   @Get('pull-requests')
   async getPullRequests(
+    @GithubToken() githubToken: string | null,
     @Query('url', ParseGithubURL) params: IRepoParams,
   ): Promise<(IPullRequestData | { error: string })[]> {
     try {
-      return await this.service.getPullRequests(params);
+      return await this.service.getPullRequests(params, githubToken);
     } catch (e) {
       console.error(e);
       throw e;

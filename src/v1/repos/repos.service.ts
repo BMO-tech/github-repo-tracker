@@ -16,8 +16,9 @@ export class ReposService {
    */
   async getPullRequests(
     params: IRepoParams,
+    githubToken?: string,
   ): Promise<(IPullRequestData | { error: string })[]> {
-    const pulls = await this.github.fetchRepoPulls(params);
+    const pulls = await this.github.fetchRepoPulls(params, githubToken);
 
     return Promise.all(
       pulls.map(
@@ -26,10 +27,13 @@ export class ReposService {
         ): Promise<IPullRequestData | { error: string }> => {
           try {
             const { id, number, title, user, commits } =
-              await this.github.fetchPullRequest({
-                number: pull.number,
-                ...params,
-              });
+              await this.github.fetchPullRequest(
+                {
+                  number: pull.number,
+                  ...params,
+                },
+                githubToken,
+              );
             return {
               id,
               number,

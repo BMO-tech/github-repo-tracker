@@ -31,7 +31,7 @@ describe('libs::github', () => {
   describe('libs::github::GithubService', () => {
     // Happy Path Tests
     it.each([{ mock: [{ number: 1234 }] }, { mock: [] }])(
-      'should fetch array of pulls from provided repo params',
+      'should fetch array of pull requests from provided repo params',
       async ({ mock }) => {
         jest.spyOn(httpService, 'get').mockResolvedValue({ data: mock });
 
@@ -65,7 +65,7 @@ describe('libs::github', () => {
     });
 
     // Test errors
-    it.each([404, 422, 500, 503])(
+    it.each([401, 404, 422, 500, 503])(
       'should handle response status of %d',
       async (error: number) => {
         jest.spyOn(httpService, 'get').mockRejectedValue({
@@ -81,7 +81,7 @@ describe('libs::github', () => {
             expect(e).toBeInstanceOf(NotFoundException);
             return;
           }
-          if (error === 422) {
+          if (error === 401 || error === 422) {
             expect(e).toBeInstanceOf(UnauthorizedException);
             return;
           }

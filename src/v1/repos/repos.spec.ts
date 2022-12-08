@@ -1,7 +1,6 @@
 import { GithubModule } from '@/libs/github/github.module';
 import { GithubService } from '@/libs/github/github.service';
 import { HelpersService } from '@/libs/helpers/helpers.service';
-import { ContextIdFactory } from '@nestjs/core';
 import { Test } from '@nestjs/testing';
 import { ReposController } from './repos.controller';
 import { ReposService } from './repos.service';

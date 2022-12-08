@@ -23,10 +23,8 @@ async function bootstrap() {
   const document = SwaggerModule.createDocument(app, swaggerConfig);
   SwaggerModule.setup('docs', app, document);
 
-  const port = +process.env.API_PORT || 3000;
-
-  await app.listen(port, () =>
-    Logger.log(`Github Repo Tracker API listing on port ${port}`),
+  await app.listen(3000, () =>
+    Logger.log('Github Repo Tracker API listing on port 3000'),
   );
 }
 bootstrap();

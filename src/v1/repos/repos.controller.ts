@@ -2,10 +2,13 @@ import { IRepoParams } from '@/libs/github/types';
 import { Controller, Get, Param, Query } from '@nestjs/common';
 import {
   ApiBadRequestResponse,
+  ApiNotFoundResponse,
   ApiOkResponse,
   ApiOperation,
   ApiQuery,
+  ApiServiceUnavailableResponse,
   ApiTags,
+  ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
 import { ParseGithubURL } from './pipes/ParseGithubURL.pipe';
 import { RepoEntity } from './repo.entity';
@@ -13,6 +16,16 @@ import { ReposService } from './repos.service';
 import { IPullRequestData } from './types';
 
 @ApiTags('Repositories')
+@ApiNotFoundResponse({
+  description:
+    'The repository either could not be found or requires authentication',
+})
+@ApiUnauthorizedResponse({
+  description: 'The requested repository requires proper authentication',
+})
+@ApiServiceUnavailableResponse({
+  description: 'The API or Github is not currently available',
+})
 @Controller({ path: 'repos', version: '1' })
 export class ReposController {
   constructor(private readonly service: ReposService) {}
@@ -42,6 +55,7 @@ export class ReposController {
       return await this.service.getPullRequests(params);
     } catch (e) {
       console.error(e);
+      throw e;
     }
   }
 
@@ -65,6 +79,7 @@ export class ReposController {
       return await this.service.getPullRequests({ owner, repo });
     } catch (e) {
       console.error(e);
+      throw e;
     }
   }
 }

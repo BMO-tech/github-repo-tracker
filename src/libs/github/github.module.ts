@@ -10,6 +10,7 @@ import { GithubService } from './github.service';
         'X-GitHub-Api-Version': '2022-11-28',
         Accept: 'application/vnd.github+json',
       },
+      validateStatus: (status) => status < 400,
     }),
   ],
   providers: [GithubService],

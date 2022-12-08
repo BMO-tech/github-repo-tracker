@@ -1,3 +1,9 @@
+import {
+  InternalServerErrorException,
+  NotFoundException,
+  ServiceUnavailableException,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { Test } from '@nestjs/testing';
 import { HttpModule, HttpService } from 'nestjs-http-promise';
 import { GithubService } from './github.service';
@@ -57,5 +63,36 @@ describe('libs::github', () => {
 
       expect(results).toEqual(mock);
     });
+
+    // Test errors
+    it.each([404, 422, 500, 503])(
+      'should handle response status of %d',
+      async (error: number) => {
+        jest.spyOn(httpService, 'get').mockRejectedValue({
+          response: { status: error },
+          message: 'test',
+        });
+
+        try {
+          await service.fetchRepoPulls({ owner: 'test', repo: 'test' });
+          expect(true).toEqual(false); // Should never get here
+        } catch (e) {
+          if (error === 404) {
+            expect(e).toBeInstanceOf(NotFoundException);
+            return;
+          }
+          if (error === 422) {
+            expect(e).toBeInstanceOf(UnauthorizedException);
+            return;
+          }
+          if (error === 503) {
+            expect(e).toBeInstanceOf(ServiceUnavailableException);
+            return;
+          }
+
+          expect(e).toBeInstanceOf(InternalServerErrorException);
+        }
+      },
+    );
   });
 });

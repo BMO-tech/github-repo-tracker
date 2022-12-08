@@ -8,21 +8,6 @@ export class ReposService {
   constructor(private readonly github: GithubService) {}
 
   /**
-   * Sanitizes a provide Github URL
-   *
-   * @param url Github URL to extract into an IRepoParams object
-   *
-   * @returns IRepo
-   */
-  sanitizeUrl(url: string): IRepoParams {
-    const { pathname } = new URL(url);
-    const parts = pathname.split('/');
-
-    // if (parts.length !== 2 ) { throw new Error() }
-    return { owner: parts[1], repo: parts[2] };
-  }
-
-  /**
    * Gets pull requests from Github client library
    *
    * @param params Repository information

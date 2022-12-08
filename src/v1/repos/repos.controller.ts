@@ -1,29 +1,68 @@
-import { Controller, Get, Query } from '@nestjs/common';
+import { IRepoParams } from '@/libs/github/types';
+import { Controller, Get, Param, Query } from '@nestjs/common';
+import {
+  ApiBadRequestResponse,
+  ApiOkResponse,
+  ApiOperation,
+  ApiQuery,
+  ApiTags,
+} from '@nestjs/swagger';
+import { ParseGithubURL } from './pipes/ParseGithubURL.pipe';
+import { RepoEntity } from './repo.entity';
 import { ReposService } from './repos.service';
 import { IPullRequestData } from './types';
 
+@ApiTags('Repositories')
 @Controller({ path: 'repos', version: '1' })
 export class ReposController {
   constructor(private readonly service: ReposService) {}
 
-  @Get()
+  @ApiOperation({
+    summary: 'Get Pull Request data for provided repository URL',
+  })
+  @ApiQuery({
+    name: 'url',
+    type: 'string',
+    required: true,
+    description: 'Repository URL',
+  })
+  @ApiOkResponse({
+    description: 'Pull requests have been found',
+    isArray: true,
+    type: RepoEntity,
+  })
+  @ApiBadRequestResponse({
+    description: 'The supplied repository url was invalid',
+  })
+  @Get('pull-requests')
   async getPullRequests(
-    @Query() params: { owner?: string; repo?: string; url?: string },
+    @Query('url', ParseGithubURL) params: IRepoParams,
   ): Promise<IPullRequestData[]> {
     try {
-      if (Object.values(params).length === 0) {
-        throw new Error('Either supply owner and repo values or the repo URL');
-      }
-      if ((params.owner && !params.repo) || (params.repo && !params.owner)) {
-        throw new Error('Either Owner and Repo must be provided');
-      }
+      return await this.service.getPullRequests(params);
+    } catch (e) {
+      console.error(e);
+    }
+  }
 
-      // If a URL is provided then ignore provided owner and repo
-      const repoParams = params.url
-        ? this.service.sanitizeUrl(params.url)
-        : { owner: params.owner, repo: params.repo };
-
-      return await this.service.getPullRequests(repoParams);
+  @ApiOperation({
+    summary: 'Get Pull Request data for provided owner and repo parameters',
+  })
+  @ApiOkResponse({
+    description: 'Pull requests have been found',
+    isArray: true,
+    type: RepoEntity,
+  })
+  @ApiBadRequestResponse({
+    description: 'The supplied owner and repo parameters were invalid',
+  })
+  @Get(':owner/:repo/pull-requests')
+  async getPullRequestsByParams(
+    @Param('owner') owner: string,
+    @Param('repo') repo: string,
+  ): Promise<IPullRequestData[]> {
+    try {
+      return await this.service.getPullRequests({ owner, repo });
     } catch (e) {
       console.error(e);
     }

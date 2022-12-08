@@ -57,9 +57,49 @@ describe('v1::repos', () => {
           number: mock.number,
           title: mock.title,
           author: mock.user.login,
-          commit_count: mock.commits,
+          commits: mock.commits,
         },
       ]);
+    });
+
+    // Error Handling
+    it('should capture an error in the resulting pull request data', async () => {
+      const mock = {
+        commits: 4,
+        id: 1,
+        number: 1234,
+        title: 'test',
+        user: { login: 'test' },
+      };
+
+      jest
+        .spyOn(github, 'fetchRepoPulls')
+        .mockResolvedValue([
+          { number: 1234 },
+          { number: 1234 },
+          { number: 1234 },
+        ]);
+
+      jest
+        .spyOn(github, 'fetchPullRequest')
+        .mockResolvedValueOnce(mock)
+        .mockRejectedValueOnce(new Error('test'))
+        .mockResolvedValueOnce(mock);
+
+      const results = await service.getPullRequests({
+        owner: 'test',
+        repo: 'test',
+      });
+
+      const resultMock = {
+        id: mock.id,
+        number: mock.number,
+        title: mock.title,
+        author: mock.user.login,
+        commits: mock.commits,
+      };
+
+      expect(results).toEqual([resultMock, { error: 'test' }, resultMock]);
     });
   });
 });

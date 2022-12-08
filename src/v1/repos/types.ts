@@ -1,6 +1,6 @@
 export interface IPullRequestData {
   author: string;
-  commit_count: number;
+  commits: number;
   id: number;
   number: number;
   title: string;

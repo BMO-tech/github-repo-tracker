@@ -50,7 +50,7 @@ export class ReposController {
   @Get('pull-requests')
   async getPullRequests(
     @Query('url', ParseGithubURL) params: IRepoParams,
-  ): Promise<IPullRequestData[]> {
+  ): Promise<(IPullRequestData | { error: string })[]> {
     try {
       return await this.service.getPullRequests(params);
     } catch (e) {
@@ -74,7 +74,7 @@ export class ReposController {
   async getPullRequestsByParams(
     @Param('owner') owner: string,
     @Param('repo') repo: string,
-  ): Promise<IPullRequestData[]> {
+  ): Promise<(IPullRequestData | { error: string })[]> {
     try {
       return await this.service.getPullRequests({ owner, repo });
     } catch (e) {
